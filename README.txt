@@ -3,7 +3,7 @@
 
 Для не знакомых с гитом: клонировать репозиторий можно следующей командой, после использования которой в вашей текущей директории появится поддиректория par_prog с содержимым:
 
-[noob]$ git clone git@github.com:StasLatGTTT/par_prog
+[noob]$ git clone https://github.com/StasLatGTTT/par_prog.git
 
 
 Компилировать можно из командной строки Linux с использованием скрипта compile.sh
