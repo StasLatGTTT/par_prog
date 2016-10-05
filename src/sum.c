@@ -16,43 +16,54 @@ int main(int argc, char* argv[]){
     double time_start=0.0, time_end=0.0, time_sing=0.0, time_mult=0.0;
     double E=0.0, S=0.0;
 
+    //проверка количества аргументов
     if(argc==2){
 	n=atoi(argv[1]);
     } else {
 	n=1000;
     }
 
+    //вычисление суммы одним потоком с замером времени
     time_start=omp_get_wtime();
     for(int i=1;i<=n;i++){
-	sum+=1.0/((double)i);
+	     sum+=1.0/((double)i);
     }
     time_end=omp_get_wtime();
 
+    //вывод информации об однопоточном вычислении
     time_sing=time_end-time_start;
     printf("Single thread worked %f s. Sum=%f\n", time_sing, sum);
 
     sum=0.0;
 
+    //вычисление несколькими потоками
     time_start=omp_get_wtime();
+    //создаются несколько потоков, переменная personal_sum обявляется частной для каждого потока
     #pragma omp parallel private(personal_sum)
     {
-	size=omp_get_num_threads();
-	#pragma omp for
-	for(int i=1;i<=n;i++){
-	    personal_sum+=1.0/((double)i);
-	}
-	#pragma omp critical
-	{
-	    sum+=personal_sum;
-	}
-    }
-    time_end=omp_get_wtime();
+      //узнаём, сколько потоков создалось
+      size=omp_get_num_threads();
+      //цикл распределяется по созданным потокам
+	    #pragma omp for
+	    for(int i=1;i<=n;i++){
+	       personal_sum+=1.0/((double)i);
+	    }
+      //критическая секция предотвращает ошибку из-за попытки одновременной записи переменной несколькими потоками
+	    #pragma omp critical
+	    {
+	       sum+=personal_sum;
+	    }
+  }
+  time_end=omp_get_wtime();
 
-    time_mult=time_end-time_start;
-    printf("%d threads worked %f s. Sum=%f\n", size, time_mult, sum);
-    S=time_sing/time_mult;
-    E=S/size;
-    printf("Efficiency E=%f, acceleration S=%f\n", E,S);
+  //вывод информации о многопоточном вычислении
+  time_mult=time_end-time_start;
+  printf("%d threads worked %f s. Sum=%f\n", size, time_mult, sum);
 
-    return 0;
+  //вычисление и вывод ускорения и эффективности
+  S=time_sing/time_mult;
+  E=S/size;
+  printf("Efficiency E=%f, acceleration S=%f\n", E,S);
+
+  return 0;
 }
