@@ -31,30 +31,36 @@ int main(int argc, char **argv)
 {
 	MPI_Init(&argc, &argv);
 	double a[ISIZE][JSIZE];
-	int i, j;
+	int i, j, rank=-1, size=-1;
 	FILE *ff;
 
-	for (i = 0; i < ISIZE; i++){
-	for (j = 0; j < JSIZE; j++){
-		a[i][j] = 10 * i +j;
-	}
-	}
+	MPI_Rank(&rank, MPI_COMM_WORLD);
+	MPI_Size(&size, MPI_COMM_WORLD);
 
-	for (i = 1; i < ISIZE; i++){
-	for (j = 3; j < JSIZE - 1; j++){
-		a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
-	}
-	}
-
-	ff = fopen("result_1g.txt","w");
-	for(i = 0; i < ISIZE; i++){
+	ROOT
+	{
+		for (i = 0; i < ISIZE; i++){
 		for (j = 0; j < JSIZE; j++){
-			fprintf(ff,"%f ",a[i][j]);
+			a[i][j] = 10 * i +j;
 		}
-		fprintf(ff,"\n");
-	}
+		}
 
-	fclose(ff);
+		for (i = 1; i < ISIZE; i++){
+		for (j = 3; j < JSIZE - 1; j++){
+			a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
+		}
+		}
+
+		ff = fopen("result_1g.txt","w");
+		for(i = 0; i < ISIZE; i++){
+			for (j = 0; j < JSIZE; j++){
+				fprintf(ff,"%f ",a[i][j]);
+			}
+			fprintf(ff,"\n");
+		}
+
+		fclose(ff);
+	}
 	MPI_Finalize();
 	return 0;
 }
