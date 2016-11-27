@@ -18,6 +18,9 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
+#define ROOT if(rank == 0)
+#define WORKER if(rank != 0)
+
 int get_diag(int x, int y, double* arr, double *diag);
 
 int insert_diag(int x, int y, double* arr, double *diag);
@@ -65,4 +68,28 @@ int length_diag(int x, int y)
 		len++;
 	}
 	return len;
+}
+
+int get_diag(int x, int y, double* a, double* diag)
+{
+	int i = 0;
+	while(x < JSIZE && y < ISIZE){
+		diag[i] = a[y * JSIZE + x];
+		x += 3;
+		y += 1;
+		i++;
+	}
+	return 0;
+}
+
+int insert_diag(int x, int y, double* a, double* diag)
+{
+	int i = 0;
+	while(x < JSIZE && y < ISIZE){
+		a[y * JSIZE + x] = diag[i];
+		x += 3;
+		y += 1;
+		i++;
+	}
+	return 0;
 }
