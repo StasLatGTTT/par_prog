@@ -3,6 +3,7 @@ CC_OMP = gcc
 
 FLAGS = -std=c99 -O2 -g
 FLAGS_OMP = -fopenmp
+FLAGS_MPI = -lm
 
 DIR_TARGET = ./bin
 DIR_COMMON = ./src
@@ -29,15 +30,17 @@ cyclic:
 	-o $(DIR_TARGET)/cyclic
 
 sum:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/hello_world.c \
+	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/sum.c \
 	-o $(DIR_TARGET)/sum
 
 lab_2: pt1 pt2
 
 pt1:
-	$(CC_MPI) $(FLAGS) $(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
+	$(CC_MPI) $(FLAGS) $(FLAGS_MPI) \
+	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
 	-o $(DIR_TARGET)/lab2_$(VAR1)
 
 pt2:
-	$(CC_MPI) $(FLAGS) $(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
-	-o $(DIR_TARGET)/lab2_$(VAR1)
+	$(CC_MPI) $(FLAGS) $(FLAGS_MPI) \
+	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR2).c \
+	-o $(DIR_TARGET)/lab2_$(VAR2)
