@@ -41,8 +41,8 @@ int main(int argc, char **argv)
 	double start, end, E, S, T1, Tp;
 	FILE *ff;
 
-	//MPI_Rank(&rank, MPI_COMM_WORLD);
-	//MPI_Size(&size, MPI_COMM_WORLD);
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
 
 	ROOT
 	{
