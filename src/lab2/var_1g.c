@@ -27,6 +27,8 @@ int insert_diag(int x, int y, double* arr, double *diag);
 
 int length_diag(int x, int y);
 
+void decode_diag(int iter, int *x, int *y);
+
 void send(int dst, int *len, double *data);
 
 void recv(int src, int *len, double *data);
@@ -39,8 +41,8 @@ int main(int argc, char **argv)
 	double start, end, E, S, T1, Tp;
 	FILE *ff;
 
-	MPI_Rank(&rank, MPI_COMM_WORLD);
-	MPI_Size(&size, MPI_COMM_WORLD);
+	//MPI_Rank(&rank, MPI_COMM_WORLD);
+	//MPI_Size(&size, MPI_COMM_WORLD);
 
 	ROOT
 	{
@@ -59,7 +61,7 @@ int main(int argc, char **argv)
 		end = MPI_Wtime();
 		T1 = end - start;
 
-		ff = fopen("result_1g_par.txt","w");
+		ff = fopen("result_1g_cons.txt","w");
 		for(i = 0; i < ISIZE; i++){
 			for (j = 0; j < JSIZE; j++){
 				fprintf(ff,"%f ",a[i][j]);
@@ -84,7 +86,7 @@ int main(int argc, char **argv)
 		end = MPI_Wtime();
 		Tp = end - start;
 
-		ff = fopen("result_1g_cons.txt","w");
+		ff = fopen("result_1g_par.txt","w");
 		for(i = 0; i < ISIZE; i++){
 			for (j = 0; j < JSIZE; j++){
 				fprintf(ff,"%f ",a[i][j]);

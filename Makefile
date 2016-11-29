@@ -9,8 +9,8 @@ DIR_TARGET = ./bin
 DIR_COMMON = ./src
 SUBDIR_LAB2 = lab2
 
-VAR1=1g
-VAR2=2g
+VAR1 = 1g
+VAR2 = 2g
 
 all: hello_world sync cyclic sum lab_2
 
