@@ -18,6 +18,9 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
+#define Di 1;
+#define Dj 3
+
 #define ROOT if(rank == 0)
 #define WORKER if(rank != 0)
 
@@ -53,9 +56,9 @@ int main(int argc, char **argv)
 		}
 
 		start = MPI_Wtime();
-		for (i = 1; i < ISIZE; i++){
-		for (j = 3; j < JSIZE - 1; j++){
-			a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
+		for (i = Di; i < ISIZE; i++){
+		for (j = Dj; j < JSIZE - Di; j++){
+			a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 		}
 		}
 		end = MPI_Wtime();
@@ -107,8 +110,8 @@ int length_diag(int x, int y)
 {
 	int len=0;
 	while((x < JSIZE) && (y < ISIZE)){
-		x += 3;
-		y += 1;
+		x += Dj;
+		y += Di;
 		len++;
 	}
 	return len;
@@ -119,8 +122,8 @@ int get_diag(int x, int y, double* a, double* diag)
 	int i = 0;
 	while(x < JSIZE && y < ISIZE){
 		diag[i] = a[y * JSIZE + x];
-		x += 3;
-		y += 1;
+		x += Dj;
+		y += Di;
 		i++;
 	}
 	return 0;
@@ -131,8 +134,8 @@ int insert_diag(int x, int y, double* a, double* diag)
 	int i = 0;
 	while(x < JSIZE && y < ISIZE){
 		a[y * JSIZE + x] = diag[i];
-		x += 3;
-		y += 1;
+		x += Dj;
+		y += Di;
 		i++;
 	}
 	return 0;
@@ -148,3 +151,5 @@ void recv(int dst, int *len, double* data){
 	MPI_Recv(len, 1, MPI_INT, dst, 0x77, MPI_COMM_WORLD, &status);
 	MPI_Recv(data, *len, MPI_DOUBLE, dst, 0x77, MPI_COMM_WORLD, &status);
 }
+
+void decode_diag()
