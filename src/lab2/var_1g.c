@@ -7,8 +7,8 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
-#define Di 2
-#define Dj 4
+#define Di 1
+#define Dj 3
 
 void decode(int i, int *x, int *y);
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	start = clock();
 	for (i = Di; i < ISIZE; i++){
 	for (j = Dj; j < JSIZE - Di; j++){
-		a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
+		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
 	end = clock();
@@ -53,9 +53,16 @@ int main(int argc, char **argv)
 
 	start = clock();
 	max_i = ISIZE * Dj + (JSIZE - Dj) * Di;
-	printf("%d\n", max_i);
 	for(i = 0; i < max_i; i++){
 		decode(i, &x, &y);
+		x += Dj;
+		y += Di;
+		while((x < JSIZE) && (y < ISIZE)){
+			//printf("x = %d\ty = %d\n", x, y);
+			a[y][x] = sin(0.00001 * a[y - Di][x - Dj]);
+			x += Dj;
+			y += Di;
+		}
 	}
 	end = clock();
 	Tp = end - start;
