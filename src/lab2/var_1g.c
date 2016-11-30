@@ -7,13 +7,15 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
-#define Di 1
-#define Dj 3
+#define Di 2
+#define Dj 4
+
+void decode(int i, int *x, int *y);
 
 int main(int argc, char **argv)
 {
 	double a[ISIZE][JSIZE];
-	int i, j, N = 1, max_i = 0;
+	int i, j, N = 1, max_i = 0, x = 0, y = 0;
 	FILE *ff;
 	double start, end, T1, Tp, E, S;
 
@@ -52,6 +54,9 @@ int main(int argc, char **argv)
 	start = clock();
 	max_i = ISIZE * Dj + (JSIZE - Dj) * Di;
 	printf("%d\n", max_i);
+	for(i = 0; i < max_i; i++){
+		decode(i, &x, &y);
+	}
 	end = clock();
 	Tp = end - start;
 
@@ -68,4 +73,16 @@ int main(int argc, char **argv)
 	E = S / N;
 	printf("%f with 1 thread\n%f with %d threads\n", T1, Tp, N);
 	printf("S = %f\t E = %f\n", S, E);
+}
+
+void decode(int i, int *x, int *y)
+{
+	if(i / ISIZE < Dj){
+		*x = i / ISIZE;
+		*y = i % ISIZE;
+	} else {
+		i = i - ISIZE * Dj;
+		*x = (i % (JSIZE - 3)) + 3;
+		*y = (i / (JSIZE - 3));
+	}
 }
