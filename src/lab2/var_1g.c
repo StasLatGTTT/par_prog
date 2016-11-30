@@ -66,6 +66,6 @@ int main(int argc, char **argv)
 
 	S = T1 / Tp;
 	E = S / N;
-	printf("%d with 1 thread\n%d with %d threads\n", T1, Tp, N);
-	printf("S = %d\t E = %d", S, E);
+	printf("%f with 1 thread\n%f with %d threads\n", T1, Tp, N);
+	printf("S = %f\t E = %f\n", S, E);
 }
