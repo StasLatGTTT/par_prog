@@ -16,6 +16,7 @@ all: hello_world sync cyclic sum lab_2
 
 clean:
 	rm -rf $(DIR_TARGET)/*
+	rm -rf ./*.txt
 
 hello_world:
 	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/hello_world.c \
