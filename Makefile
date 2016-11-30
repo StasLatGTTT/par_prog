@@ -36,11 +36,11 @@ sum:
 lab_2: pt1 pt2
 
 pt1:
-	$(CC_MPI) $(FLAGS) $(FLAGS_MPI) \
+	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
 	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
 	-o $(DIR_TARGET)/lab2_$(VAR1)
 
 pt2:
-	$(CC_MPI) $(FLAGS) $(FLAGS_MPI) \
+	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
 	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR2).c \
 	-o $(DIR_TARGET)/lab2_$(VAR2)
