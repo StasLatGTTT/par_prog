@@ -7,10 +7,13 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
+#define Di 1
+#define Dj 3
+
 int main(int argc, char **argv)
 {
 	double a[ISIZE][JSIZE];
-	int i, j, N = 1;
+	int i, j, N = 1, max_i = 0;
 	FILE *ff;
 	double start, end, T1, Tp, E, S;
 
@@ -22,8 +25,8 @@ int main(int argc, char **argv)
 	}
 
 	start = clock();
-	for (i = 1; i < ISIZE; i++){
-	for (j = 3; j < JSIZE - 1; j++){
+	for (i = Di; i < ISIZE; i++){
+	for (j = Dj; j < JSIZE - Di; j++){
 		a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
 	}
 	}
@@ -47,11 +50,8 @@ int main(int argc, char **argv)
 	}
 
 	start = clock();
-	for (i = 1; i < ISIZE; i++){
-	for (j = 3; j < JSIZE - 1; j++){
-		a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
-	}
-	}
+	max_i = ISIZE * Dj + (JSIZE - Dj) * Di;
+	printf("%d\n", max_i);
 	end = clock();
 	Tp = end - start;
 
