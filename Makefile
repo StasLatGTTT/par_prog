@@ -1,9 +1,9 @@
 CC_MPI = mpicc
 CC_OMP = gcc
 
-FLAGS = -std=c99 -O2 -g
+FLAGS = -std=c99 -O2 -g -lm
 FLAGS_OMP = -fopenmp
-FLAGS_MPI = -lm
+FLAGS_MPI =
 
 DIR_TARGET = ./bin
 DIR_COMMON = ./src
