@@ -18,7 +18,7 @@
 #define ISIZE 1000
 #define JSIZE 1000
 
-#define Di 1;
+#define Di 1
 #define Dj 3
 
 #define ROOT if(rank == 0)
@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 
 	ROOT
 	{
+		//consistent computation
 		for (i = 0; i < ISIZE; i++){
 		for (j = 0; j < JSIZE; j++){
 			a[i][j] = 10 * i +j;
@@ -73,7 +74,8 @@ int main(int argc, char **argv)
 		}
 		fclose(ff);
 
-
+		//parallel computation
+		int x, y, num_max = Dj * ISIZE + (JSIZE - Dj);
 		for (i = 0; i < ISIZE; i++){
 		for (j = 0; j < JSIZE; j++){
 			a[i][j] = 10 * i +j;
@@ -81,11 +83,8 @@ int main(int argc, char **argv)
 		}
 
 		start = MPI_Wtime();
-		for (i = 1; i < ISIZE; i++){
-		for (j = 3; j < JSIZE - 1; j++){
-			a[i][j] = sin(0.00001 * a[i - 1][j - 3]);
-		}
-		}
+		decode_diag(0, &x, &y);
+		printf("x=%d\ty=%d\n", x, y);
 		end = MPI_Wtime();
 		Tp = end - start;
 
@@ -102,6 +101,7 @@ int main(int argc, char **argv)
 		E = S / (size-1);
 		printf("T1=%f\tTp=%f\tS=%f\tE=%f\n", T1, Tp, S, E);
 	}
+	MPI_Barrier(MPI_COMM_WORLD);
 	MPI_Finalize();
 	return 0;
 }
@@ -152,4 +152,14 @@ void recv(int dst, int *len, double* data){
 	MPI_Recv(data, *len, MPI_DOUBLE, dst, 0x77, MPI_COMM_WORLD, &status);
 }
 
-void decode_diag()
+void decode_diag(int i, int *x, int *y)
+{
+	if(i < ISIZE * Dj)
+	{
+		*x = i / ISIZE;
+		*y = i % ISIZE;
+	} else {
+		*x = (i - ISIZE * Dj) % (JSIZE - Dj);
+		*y = (i - JSIZE * Di) / (JSIZE - Dj);
+	}
+}
