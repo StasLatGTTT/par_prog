@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 {
 	double *pa;
 	double *a[ISIZE];
-	int i, j;
+	int i, j, N = 1;
 	FILE *ff;
 	double start, end, T1, Tp, E, S;
 
@@ -42,11 +42,14 @@ int main(int argc, char **argv)
 	}
 	}
 
+	start = omp_get_wtime();
 	for (i = 0; i < ISIZE + Di; i++){
 	for (j = Dj; j < JSIZE; j++){
 		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
+	end = omp_get_wtime();
+	T1 = end - start;
 
 	ff = fopen("result_cons.txt","w");
 	for(i = 0; i < ISIZE; i++){
@@ -64,11 +67,14 @@ int main(int argc, char **argv)
 	}
 	}
 
+	start = omp_get_wtime();
 	for (i = 0; i < ISIZE + Di; i++){
 	for (j = Dj; j < JSIZE; j++){
 		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
+	end = omp_get_wtime();
+	Tp = end - start;
 
 	ff = fopen("result_par.txt","w");
 	for(i = 0; i < ISIZE; i++){
@@ -78,6 +84,11 @@ int main(int argc, char **argv)
 		fprintf(ff,"\n");
 	}
 	fclose(ff);
+
+	S = T1 / Tp;
+	E = N / S;
+	printf("%f with 1 thread\n%f with %d threads\n", T1, Tp, N);
+	printf("S = %f\t E = %f\n", S, E);
 
 	free(pa);
 	return 0;
