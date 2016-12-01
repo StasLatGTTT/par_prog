@@ -23,15 +23,18 @@
 
 int main(int argc, char **argv)
 {
-	double *pa;
+	double *pa, *pb;
 	double *a[ISIZE];
+	double *b[ISIZE];
 	int i, j, N = 1;
 	FILE *ff;
 	double start, end, T1, Tp, E, S;
 
 	pa = (double*)malloc(sizeof(double) * ISIZE * JSIZE);
+	pb = (double*)malloc(sizeof(double) * ISIZE * JSIZE);
 	for(i = 0; i < ISIZE; i++){
 		a[i] = pa + i * JSIZE;
+		b[i] = pb + i * JSIZE;
 	}
 	printf("%d\t%d\t%d\t%d\n", pa, pa + ISIZE * JSIZE, 0 - Di, a[ISIZE-1]);
 
@@ -64,14 +67,20 @@ int main(int argc, char **argv)
 	for (i = 0; i < ISIZE; i++){
 	for (j = 0; j < JSIZE; j++){
 		a[i][j] = 10 * i + j;
+		b[i][j] = a[i][j];
 	}
 	}
 
 	start = omp_get_wtime();
-	for (i = 0; i < ISIZE + Di; i++){
-	for (j = Dj; j < JSIZE; j++){
-		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
-	}
+	#pragma omp parallel
+	{
+		N = omp_get_num_threads();
+		#pragma omp for private(i, j)
+		for (i = 0; i < ISIZE + Di; i++){
+		for (j = Dj; j < JSIZE; j++){
+			b[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
+		}
+		}
 	}
 	end = omp_get_wtime();
 	Tp = end - start;
@@ -79,17 +88,18 @@ int main(int argc, char **argv)
 	ff = fopen("result_par.txt","w");
 	for(i = 0; i < ISIZE; i++){
 		for (j = 0; j < JSIZE; j++){
-			fprintf(ff,"%f ",a[i][j]);
+			fprintf(ff,"%f ",b[i][j]);
 		}
 		fprintf(ff,"\n");
 	}
 	fclose(ff);
 
 	S = T1 / Tp;
-	E = N / S;
+	E = S / N;
 	printf("%f with 1 thread\n%f with %d threads\n", T1, Tp, N);
 	printf("S = %f\t E = %f\n", S, E);
 
 	free(pa);
+	free(pb);
 	return 0;
 }
