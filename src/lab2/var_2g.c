@@ -23,20 +23,32 @@
 
 int main(int argc, char **argv)
 {
-	double a[ISIZE][JSIZE];
+	double *pa;
+	double *a[ISIZE];
 	int i, j;
 	FILE *ff;
+	double start, end, T1, Tp, E, S;
+
+	pa = (double*)malloc(sizeof(double) * ISIZE * JSIZE);
+	for(i = 0; i < ISIZE; i++){
+		a[i] = pa + i * JSIZE;
+	}
+	printf("%d\t%d\t%d\t%d\n", pa, pa + ISIZE * JSIZE, 0 - Di, a[ISIZE-1]);
+
+	//consistent computation
 	for (i = 0; i < ISIZE; i++){
 	for (j = 0; j < JSIZE; j++){
 		a[i][j] = 10 * i + j;
 	}
 	}
-	for (i = 0; i < ISIZE - 4; i++){
-	for (j = 5; j < JSIZE; j++){
-		a[i][j] = sin(0.00001*a[i+4][j-5]);
+
+	for (i = 0; i < ISIZE + Di; i++){
+	for (j = Dj; j < JSIZE; j++){
+		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
-	ff = fopen("result.txt","w");
+
+	ff = fopen("result_cons.txt","w");
 	for(i = 0; i < ISIZE; i++){
 		for (j = 0; j < JSIZE; j++){
 			fprintf(ff,"%f ",a[i][j]);
@@ -44,4 +56,29 @@ int main(int argc, char **argv)
 		fprintf(ff,"\n");
 	}
 	fclose(ff);
+
+	//parallel computation
+	for (i = 0; i < ISIZE; i++){
+	for (j = 0; j < JSIZE; j++){
+		a[i][j] = 10 * i + j;
+	}
+	}
+
+	for (i = 0; i < ISIZE + Di; i++){
+	for (j = Dj; j < JSIZE; j++){
+		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
+	}
+	}
+
+	ff = fopen("result_par.txt","w");
+	for(i = 0; i < ISIZE; i++){
+		for (j = 0; j < JSIZE; j++){
+			fprintf(ff,"%f ",a[i][j]);
+		}
+		fprintf(ff,"\n");
+	}
+	fclose(ff);
+
+	free(pa);
+	return 0;
 }
