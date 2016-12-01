@@ -14,10 +14,16 @@ void decode(int i, int *x, int *y);
 
 int main(int argc, char **argv)
 {
-	double a[ISIZE][JSIZE];
+	double *pa;
+	double *a[ISIZE];
 	int i, j, N = 1, max_i = 0, x = 0, y = 0;
 	FILE *ff;
 	double start, end, T1, Tp, E, S;
+
+	pa = (double*)malloc(sizeof(double) * ISIZE * JSIZE);
+	for(i = 0; i < ISIZE; i++){
+		a[i] = pa + i * JSIZE;
+	}
 
 	//consistent computation
 	for (i = 0; i < ISIZE; i++){
@@ -85,6 +91,9 @@ int main(int argc, char **argv)
 	E = S / N;
 	printf("%f with 1 thread\n%f with %d threads\n", T1, Tp, N);
 	printf("S = %f\t E = %f\n", S, E);
+
+	free(pa);
+	return 0;
 }
 
 void decode(int i, int *x, int *y)
