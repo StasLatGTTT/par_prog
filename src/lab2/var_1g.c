@@ -32,13 +32,13 @@ int main(int argc, char **argv)
 	}
 	}
 
-	start = clock();
+	start = omp_get_wtime();
 	for (i = Di; i < ISIZE; i++){
 	for (j = Dj; j < JSIZE - Di; j++){
 		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
-	end = clock();
+	end = omp_get_wtime();
 	T1 = end - start;
 
 	ff = fopen("result_cons.txt","w");
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	}
 	}
 
-	start = clock();
+	start = omp_get_wtime();
 	max_i = ISIZE * Dj + (JSIZE - Dj) * Di;
 	#pragma omp parallel private(x, y)
 	{
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 			}
 		}
 	}
-	end = clock();
+	end = omp_get_wtime();
 	Tp = end - start;
 
 	ff = fopen("result_par.txt","w");
