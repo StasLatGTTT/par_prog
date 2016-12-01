@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	//consistent computation
 	for (i = 0; i < ISIZE; i++){
 	for (j = 0; j < JSIZE; j++){
-		a[i][j] = 10 * i +j;
+		a[i][j] = 10 * i + j;
 	}
 	}
 
@@ -53,15 +53,20 @@ int main(int argc, char **argv)
 
 	start = clock();
 	max_i = ISIZE * Dj + (JSIZE - Dj) * Di;
-	for(i = 0; i < max_i; i++){
-		decode(i, &x, &y);
-		x += Dj;
-		y += Di;
-		while((x < JSIZE) && (y < ISIZE)){
-			//printf("x = %d\ty = %d\n", x, y);
-			a[y][x] = sin(0.00001 * a[y - Di][x - Dj]);
+	#pragma omp parallel private(x, y)
+	{
+		N = omp_get_num_threads();
+		#pragma omp for
+		for(i = 0; i < max_i; i++){
+			decode(i, &x, &y);
 			x += Dj;
 			y += Di;
+			while((x < JSIZE) && (y < ISIZE)){
+				//printf("x = %d\ty = %d\n", x, y);
+				a[y][x] = sin(0.00001 * a[y - Di][x - Dj]);
+				x += Dj;
+				y += Di;
+			}
 		}
 	}
 	end = clock();
