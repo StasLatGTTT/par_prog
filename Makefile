@@ -47,6 +47,7 @@ pt2:
 	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR2).c \
 	-o $(DIR_TARGET)/lab2_$(VAR2)
 
-task2: $(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
-	$(DIR_COMMON)/$(SUBDIR_TASK2)task2.c \
+task2:
+	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
+	$(DIR_COMMON)/$(SUBDIR_TASK2)/task2.c \
 	-o $(DIR_TARGET)/task2
