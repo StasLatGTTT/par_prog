@@ -7,6 +7,10 @@
 
 double max_diff(double *arr1, double *arr2, int len);
 
+void task_func(double *f, double *y, int len, double param);
+
+void task_func_der(double *f_der, double *f, int len, double h, double param);
+
 int main(int argc, char* argv[]){
 	long int N = 1;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
@@ -57,4 +61,21 @@ double max_diff(double *arr1, double* arr2, int len)
 		max = (curr > max) ? curr : max;
 	}
 	return max;
+}
+
+void task_func(double *f, double *y, int len, double param)
+{
+	for (int i = 0; i < len; i++){
+		f[i] = param * (y[i] * y[i] - 1) * y[i];
+	}
+}
+
+void task_func_der(double *f_der, double *f, int len, double h, double param)
+{
+	f_der[0] = (f[1] - f[0]) / h;
+	f_der[len - 1] = (f[len - 1] - f[len - 2]) / h;
+	h *= 2;
+	for (int i = 1; i < (len - 1); i++){
+		f_der[i] = (f[i + 1] - f[i - 1]) / h;
+	}
 }
