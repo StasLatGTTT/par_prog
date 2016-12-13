@@ -9,7 +9,7 @@ int main(int argc, char* argv[]){
 	long int N = 1;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, temp, param = 100.0;
-	double *a, *b, *c, *f, *x, *y, *y_next, *y_der;
+	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
 
 	if(argc != 2){
 		printf("Invalid argument number\n");
@@ -29,11 +29,12 @@ int main(int argc, char* argv[]){
 	a = (double*) malloc(N * sizeof(double));
 	b = (double*) malloc(N * sizeof(double));
 	c = (double*) malloc(N * sizeof(double));
-	f = (double*) malloc(N * sizeof(double));
+	w = (double*) malloc(N * sizeof(double));
 	x = (double*) malloc(N * sizeof(double));
 	y = (double*) malloc(N * sizeof(double));
 	y_next = (double*) malloc(N * sizeof(double));
-	y_der = (double*) malloc(N * sizeof(double));
+	f = (double*) malloc(N * sizeof(double));
+	f_der = (double*) malloc(N * sizeof(double));
 
 	free(a);
 	free(b);
@@ -41,7 +42,8 @@ int main(int argc, char* argv[]){
 	free(x);
 	free(y);
 	free(y_next);
-	free(y_der);
+	free(f_der);
 	free(f);
+	free(w);
 	return 0;
 }
