@@ -5,12 +5,41 @@
 
 #define EPS 0.01
 
+/*
+	Calculates 1st norm of defference of two vectors
+		arr1, arr2 - vectors to calculate their difference
+		len - their common length
+*/
 double max_diff(double *arr1, double *arr2, int len);
 
+/*
+	Calculates vector of task function based on current y
+		f - pointer where to place target vector
+		y - current iteration of solution
+		len - their common length
+		param - task parameter
+*/
 void task_func(double *f, double *y, int len, double param);
 
+/*
+	Calculates vector of f derivatives
+		f_der - pointer where to place target vector
+		f - vector to calculate derivative of
+		len - thir common length
+		h - step of x
+		param - task parameter
+*/
 void task_func_der(double *f_der, double *f, int len, double h, double param);
 
+/*
+	Solve system of linear equations
+		y - solution vector
+		a - lower-left diagonal
+		b - main diagonal
+		c - upper-right diagonal
+		w - free vector
+		len - their common length
+*/
 void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
 
 int main(int argc, char* argv[]){
@@ -19,6 +48,12 @@ int main(int argc, char* argv[]){
 	double err = 1, h = 1, temp, param = 100.0;
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
 
+	//initiating task parameters
+	//param - coefficient in task function a
+	//h - step of x
+	//temp - upper limit of h
+	//N - number of nodes
+	//y_left, y_right - left and right border conditions
 	if(argc != 2){
 		printf("Invalid argument number\n");
 		return -1;
@@ -33,6 +68,18 @@ int main(int argc, char* argv[]){
 	y_left = sqrt(2);
 	y_right = y_left;
 
+	/*
+		Allocate memory for solution
+			a - lower-left diagonal
+			b - main diagonal
+			c - upper-right diagonal
+			w - free vector
+			x - x-axis
+			y - current stem approximation
+			y_next - next step approximation
+			f - task function vector
+			f_der - task function derivative vector
+	*/
 	a = (double*) malloc(N * sizeof(double));
 	b = (double*) malloc(N * sizeof(double));
 	c = (double*) malloc(N * sizeof(double));
