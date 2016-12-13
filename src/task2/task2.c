@@ -11,6 +11,8 @@ void task_func(double *f, double *y, int len, double param);
 
 void task_func_der(double *f_der, double *f, int len, double h, double param);
 
+void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
+
 int main(int argc, char* argv[]){
 	long int N = 1;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
