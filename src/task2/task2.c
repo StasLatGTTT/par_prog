@@ -5,6 +5,8 @@
 
 #define EPS 0.01
 
+double max_diff(double *arr1, double *arr2, int len);
+
 int main(int argc, char* argv[]){
 	long int N = 1;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
@@ -24,7 +26,6 @@ int main(int argc, char* argv[]){
 	N++;
 	y_left = sqrt(2);
 	y_right = y_left;
-	printf("param = %lf\ttemp = %lf\th = %lf\tN = %d\n", param, temp, h, N);
 
 	a = (double*) malloc(N * sizeof(double));
 	b = (double*) malloc(N * sizeof(double));
@@ -46,4 +47,14 @@ int main(int argc, char* argv[]){
 	free(f);
 	free(w);
 	return 0;
+}
+
+double max_diff(double *arr1, double* arr2, int len)
+{
+	double max = fabs(arr1[0] - arr2[0]), curr;
+	for (int i = 1; i < len; i++){
+		curr = fabs(arr1[i] - arr2[i]);
+		max = (curr > max) ? curr : max;
+	}
+	return max;
 }
