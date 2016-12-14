@@ -45,8 +45,9 @@ void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
 int main(int argc, char* argv[]){
 	long int N = 1, i = 0;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
-	double err = 1, h = 1, temp1, temp2, param = 100.0;
+	double err = 1, h = 1, param = 100.0;
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
+	double temp[16];
 
 	/*
 		Initiate task parameters
@@ -54,7 +55,7 @@ int main(int argc, char* argv[]){
 			h - step of x
 			N - number of nodes
 			y_left, y_right - left and right border conditions
-			temp1, temp2 - optimisation variables
+			temp - array of optimisation variables
 
 	*/
 	if(argc != 2){
@@ -62,11 +63,11 @@ int main(int argc, char* argv[]){
 		return -1;
 	}
 	param = atof(argv[1]);
-	temp1 = 1.0 / ((x_max - x_min) * sqrt(param));
-	temp2 = x_max - x_min;
-	while(h > temp1) {
+	temp[0] = 1.0 / ((x_max - x_min) * sqrt(param));
+	temp[1] = x_max - x_min;
+	while(h > temp[0]) {
 		N *= 10;
-		h = temp2 / N;
+		h = temp[1] / N;
 	}
 	N++;
 	y_left = sqrt(2);
@@ -94,12 +95,17 @@ int main(int argc, char* argv[]){
 	f = (double*) malloc(N * sizeof(double));
 	f_der = (double*) malloc(N * sizeof(double));
 
-	temp1 = (y_right - y_left) / (x_max - x_min) * h;
-	temp2 = EPS * 10;
+	//initial x and y setting
+	temp[0] = (y_right - y_left) / (x_max - x_min) * h;
+	temp[1] = EPS * 10;
+	x[0] = x_min;
+	x[N - 1] = x_max;
 	for (i = 1; i < N - 1; i++){
-		y[i] = y[i - 1] + temp1;
-		y_next[i] = y[i] + temp2;
+		y[i] = y[i - 1] + temp[0];
+		y_next[i] = y[i] + temp[1];
+		x[i] = x[i - 1] + h;
 	}
+	err = temp[1];
 
 	free(a);
 	free(b);
