@@ -26,36 +26,33 @@ dirs:
 	mkdir -p $(DIR_SCRIPTS)
 
 hello_world:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/hello_world.c \
-	-o $(DIR_TARGET)/hello_world
+	$(CC_OMP) $(DIR_COMMON)/hello_world.c \
+	-o $(DIR_TARGET)/hello_world $(FLAGS) $(FLAGS_OMP)
 
 sync:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/sync.c \
-	-o $(DIR_TARGET)/sync
+	$(CC_OMP) $(DIR_COMMON)/sync.c \
+	-o $(DIR_TARGET)/sync $(FLAGS) $(FLAGS_OMP)
 
 cyclic:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/cyclic.c \
-	-o $(DIR_TARGET)/cyclic
+	$(CC_OMP) $(DIR_COMMON)/cyclic.c \
+	-o $(DIR_TARGET)/cyclic $(FLAGS) $(FLAGS_OMP)
 
 sum:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/sum.c \
-	-o $(DIR_TARGET)/sum
+	$(CC_OMP) $(DIR_COMMON)/sum.c \
+	-o $(DIR_TARGET)/sum $(FLAGS) $(FLAGS_OMP)
 
 lab_2: pt1 pt2
 
 pt1:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
-	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
-	-o $(DIR_TARGET)/lab2_$(VAR1)
+	$(CC_OMP) $(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR1).c \
+	-o $(DIR_TARGET)/lab2_$(VAR1) $(FLAGS) $(FLAGS_OMP)
 
 pt2:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
-	$(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR2).c \
-	-o $(DIR_TARGET)/lab2_$(VAR2)
+	$(CC_OMP) $(DIR_COMMON)/$(SUBDIR_LAB2)/var_$(VAR2).c \
+	-o $(DIR_TARGET)/lab2_$(VAR2) $(FLAGS) $(FLAGS_OMP)
 
 task2:
-	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
-	$(DIR_COMMON)/$(SUBDIR_TASK2)/task2.c \
-	-o $(DIR_TARGET)/task2
+	$(CC_OMP) $(DIR_COMMON)/$(SUBDIR_TASK2)/task2.c \
+	-o $(DIR_TARGET)/task2  $(FLAGS) $(FLAGS_OMP)
 	cp $(DIR_COMMON)/$(SUBDIR_TASK2)/plotter.py \
 	$(DIR_SCRIPTS)/plotter.py
