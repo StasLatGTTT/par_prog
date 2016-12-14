@@ -72,8 +72,9 @@ int main(int argc, char* argv[]){
 	*/
 	if(argc != 2){
 		param = 100.0;
+	} else {
+		param = atof(argv[1]);
 	}
-	param = atof(argv[1]);
 	//cycle constant: upper limit of posiible h
 	d_temp[0] = 1.0 / ((x_max - x_min) * sqrt(param));
 	//cycle constant: x range
