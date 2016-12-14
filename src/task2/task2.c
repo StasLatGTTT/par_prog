@@ -131,16 +131,6 @@ int main(int argc, char* argv[]){
 	//initial err
 	err = d_temp[1];
 
-	out = fopen("task2_solution.txt", "w");
-	fprintf(out, "%d\n", N);
-	for(i = 0; i < N; i++){
-		fprintf(out, "%f\n", x[i]);
-	}
-	for(i = 0; i < N; i++){
-		fprintf(out, "%f\n", y[i]);
-	}
-	fclose(out);
-
 	//main cycle
 	printf("Starting computation cycle\n");
 	while(err > EPS){
@@ -176,6 +166,17 @@ int main(int argc, char* argv[]){
 		*/
 	}
 	printf("Printing result\n");
+
+	//save result in file
+	out = fopen("task2_solution.txt", "w");
+	fprintf(out, "%d\n", N);
+	for(i = 0; i < N; i++){
+		fprintf(out, "%f\n", x[i]);
+	}
+	for(i = 0; i < N; i++){
+		fprintf(out, "%f\n", y_next[i]);
+	}
+	fclose(out);
 
 	free(a);
 	free(b);
