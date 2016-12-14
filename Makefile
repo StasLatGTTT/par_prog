@@ -13,11 +13,14 @@ SUBDIR_TASK2 = task2
 VAR1=1g
 VAR2=2g
 
-all: hello_world sync cyclic sum lab_2 task2
+all: dirs hello_world sync cyclic sum lab_2 task2
 
 clean:
 	rm -rf $(DIR_TARGET)/*
 	rm -rf ./*.txt
+
+dirs:
+	mkdir -p $(DIR_TARGET)
 
 hello_world:
 	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/hello_world.c \
