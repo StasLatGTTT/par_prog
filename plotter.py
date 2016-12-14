@@ -15,6 +15,7 @@ for i in range(N):
 pl.plot(x, y,label="Solution")
 pl.xlabel("x")
 pl.ylabel("y")
+pl.grid()
 pl.show()
 
 out.close()

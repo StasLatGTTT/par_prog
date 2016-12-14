@@ -71,8 +71,7 @@ int main(int argc, char* argv[]){
 
 	*/
 	if(argc != 2){
-		printf("Invalid argument number\nAbort computation\n");
-		return -1;
+		param = 100.0;
 	}
 	param = atof(argv[1]);
 	//cycle constant: upper limit of posiible h
