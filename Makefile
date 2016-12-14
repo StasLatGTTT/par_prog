@@ -23,6 +23,7 @@ clean:
 
 dirs:
 	mkdir -p $(DIR_TARGET)
+	mkdir -p $(DIR_SCRIPTS)
 
 hello_world:
 	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) $(DIR_COMMON)/hello_world.c \
