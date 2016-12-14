@@ -4,6 +4,7 @@
 #include <omp.h>
 
 #define EPS 0.01
+#define MY_TASK "a * (y ^ 3 - y)"
 
 /*
 	Calculates 1st norm of defference of two vectors
@@ -50,6 +51,8 @@ int main(int argc, char* argv[]){
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *exch;
 	double d_temp[4];
 
+	printf("Starting computation\nEquation: y\'\' = %s\n", MY_TASK);
+
 	/*
 		Initiate task parameters
 			param - coefficient in task function a
@@ -61,7 +64,7 @@ int main(int argc, char* argv[]){
 
 	*/
 	if(argc != 2){
-		printf("Invalid argument number\n");
+		printf("Invalid argument number\nAbort computation\n");
 		return -1;
 	}
 	param = atof(argv[1]);
@@ -76,6 +79,11 @@ int main(int argc, char* argv[]){
 	N++;
 	y_left = sqrt(2);
 	y_right = y_left;
+
+	printf("Task parameters\na = %lf\n", param);
+	printf("Range: from %lf to %lf\n", x_min, x_max);
+	printf("y(%lf) = %lf;   y(%lf) = %lf\n", x_min, y_left, x_max, y_right);
+	printf("N = %d, h = %lf\n", N, h);
 
 	/*
 		Allocate memory for solution
@@ -115,6 +123,7 @@ int main(int argc, char* argv[]){
 	err = d_temp[1];
 
 	//main cycle
+	printf("Starting computation cycle\n");
 	while(err > EPS){
 		//setting iteration vectors
 		task_func(f, y, N, param);
@@ -147,6 +156,7 @@ int main(int argc, char* argv[]){
 		y_next = exch;
 		*/
 	}
+	printf("Printing result\n");
 
 	free(a);
 	free(b);
@@ -157,6 +167,8 @@ int main(int argc, char* argv[]){
 	free(f_der);
 	free(f);
 	free(w);
+
+	printf("Computation complete\n");
 	return 0;
 }
 
