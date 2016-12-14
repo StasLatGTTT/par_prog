@@ -134,13 +134,11 @@ int main(int argc, char* argv[]){
 	out = fopen("task2_solution.txt", "w");
 	fprintf(out, "%d\n", N);
 	for(i = 0; i < N; i++){
-		fprintf(out, "%f ", x[i]);
+		fprintf(out, "%f\n", x[i]);
 	}
-	fprintf(out, "\n");
 	for(i = 0; i < N; i++){
-		fprintf(out, "%f ", y[i]);
+		fprintf(out, "%f\n", y[i]);
 	}
-	fprintf(out, "\n");
 	fclose(out);
 
 	//main cycle
