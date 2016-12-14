@@ -44,7 +44,7 @@ void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
 
 int main(int argc, char* argv[]){
 	int N = 1, i = 0;
-	int i_temp[4];
+	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
 			N - number of nodes
 			y_left, y_right - left and right border conditions
 			d_temp - array of optimisation doubles
-			i_temp - array of optimisation integers
+			i_temp - optimisation integer
 
 	*/
 	if(argc != 2){
@@ -113,6 +113,23 @@ int main(int argc, char* argv[]){
 	}
 	//initial err
 	err = d_temp[1];
+
+	//main cycle
+	while(err > EPS){
+		//setting iteration vectors
+		task_func(f, y, N, param);
+		task_func_der(f_der, f, N, h, param);
+		err /= 10.0;
+		a[0] = c[0] = a[N -1] = c[N - 1] = 0.0;
+		b[0] = b[N - 1] = 1;
+		w[0] = y_left;
+		w[N - 1] = y_right;
+		//cycle constant: cycle range
+		i_temp = N - 1;
+		for(i = 1; i < i_temp; i++){
+			//important work
+		}
+	}
 
 	free(a);
 	free(b);
