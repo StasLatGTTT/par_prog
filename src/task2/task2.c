@@ -137,7 +137,7 @@ int main(int argc, char* argv[]){
 		//setting iteration vectors
 		task_func(f, y, N, param);
 		task_func_der(f_der, f, N, h, param);
-		err /= 10.0;
+		err /= 2.0;
 		a[0] = c[0] = a[N -1] = c[N - 1] = 0.0;
 		b[0] = b[N - 1] = 1;
 		w[0] = y_left;
@@ -156,14 +156,12 @@ int main(int argc, char* argv[]){
 				- 10 * f_der[i] * y[i]) / 12.0;
 		}
 
-		/*
 		//compute next iteration of approximation
 		solve_sle(y_next, a, b, c, w, N);
-		err = max_diff(y, y_next, N);
+		//err = max_diff(y, y_next, N);
 		exch = y;
 		y = y_next;
 		y_next = exch;
-		*/
 	}
 	printf("Printing result\n");
 
@@ -174,7 +172,7 @@ int main(int argc, char* argv[]){
 		fprintf(out, "%f\n", x[i]);
 	}
 	for(i = 0; i < N; i++){
-		fprintf(out, "%f\n", y_next[i]);
+		fprintf(out, "%f\n", y[i]);
 	}
 	fclose(out);
 
@@ -216,5 +214,13 @@ void task_func_der(double *f_der, double *f, int len, double h, double param)
 	h *= 2;
 	for (int i = 1; i < (len - 1); i++){
 		f_der[i] = (f[i + 1] - f[i - 1]) / h;
+	}
+}
+
+void solve_sle(double *y, double *a, double *b, double *c, double *w, int len)
+{
+	int i = 0;
+	for(i = 0; i < len; i++){
+		y[i] = 1.4 + 0.001 * i;
 	}
 }
