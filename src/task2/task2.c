@@ -43,26 +43,30 @@ void task_func_der(double *f_der, double *f, int len, double h, double param);
 void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
 
 int main(int argc, char* argv[]){
-	long int N = 1;
+	long int N = 1, i = 0;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
-	double err = 1, h = 1, temp, param = 100.0;
+	double err = 1, h = 1, temp1, temp2, param = 100.0;
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
 
-	//initiating task parameters
-	//param - coefficient in task function a
-	//h - step of x
-	//temp - upper limit of h
-	//N - number of nodes
-	//y_left, y_right - left and right border conditions
+	/*
+		Initiate task parameters
+			param - coefficient in task function a
+			h - step of x
+			N - number of nodes
+			y_left, y_right - left and right border conditions
+			temp1, temp2 - optimisation variables
+
+	*/
 	if(argc != 2){
 		printf("Invalid argument number\n");
 		return -1;
 	}
 	param = atof(argv[1]);
-	temp = 1.0 / ((x_max - x_min) * sqrt(param));
-	while(h > temp) {
+	temp1 = 1.0 / ((x_max - x_min) * sqrt(param));
+	temp2 = x_max - x_min;
+	while(h > temp1) {
 		N *= 10;
-		h = (x_max - x_min) / N;
+		h = temp2 / N;
 	}
 	N++;
 	y_left = sqrt(2);
@@ -89,6 +93,13 @@ int main(int argc, char* argv[]){
 	y_next = (double*) malloc(N * sizeof(double));
 	f = (double*) malloc(N * sizeof(double));
 	f_der = (double*) malloc(N * sizeof(double));
+
+	temp1 = (y_right - y_left) / (x_max - x_min) * h;
+	temp2 = EPS * 10;
+	for (i = 1; i < N - 1; i++){
+		y[i] = y[i - 1] + temp1;
+		y_next[i] = y[i] + temp2;
+	}
 
 	free(a);
 	free(b);
