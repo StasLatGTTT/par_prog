@@ -56,6 +56,7 @@ int main(int argc, char* argv[]){
 	double err = 1, h = 1, param = 100.0;
 	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *exch;
 	double d_temp[4];
+	FILE* out;
 
 	printf("Starting computation\nEquation: y\'\' = %s\n", MY_TASK);
 
@@ -120,6 +121,8 @@ int main(int argc, char* argv[]){
 	d_temp[1] = EPS * 10;
 	x[0] = x_min;
 	x[N - 1] = x_max;
+	y[0] = y_left;
+	y[N - 1] = y_right;
 	for (i = 1; i < N - 1; i++){
 		y[i] = y[i - 1] + d_temp[0];
 		y_next[i] = y[i] + d_temp[1];
@@ -127,6 +130,18 @@ int main(int argc, char* argv[]){
 	}
 	//initial err
 	err = d_temp[1];
+
+	out = fopen("task2_solution.txt", "w");
+	fprintf(out, "%d\n", N);
+	for(i = 0; i < N; i++){
+		fprintf(out, "%f ", x[i]);
+	}
+	fprintf(out, "\n");
+	for(i = 0; i < N; i++){
+		fprintf(out, "%f ", y[i]);
+	}
+	fprintf(out, "\n");
+	fclose(out);
 
 	//main cycle
 	printf("Starting computation cycle\n");
