@@ -6,6 +6,7 @@ FLAGS_OMP = -fopenmp
 FLAGS_MPI =
 
 DIR_TARGET = ./bin
+DIR_SCRIPTS = ./scripts
 DIR_COMMON = ./src
 SUBDIR_LAB2 = lab2
 SUBDIR_TASK2 = task2
@@ -17,6 +18,7 @@ all: hello_world sync cyclic sum lab_2 task2
 
 clean:
 	rm -rf $(DIR_TARGET)/*
+	rm -rf $(DIR_SCRIPTS)/*
 	rm -rf ./*.txt
 
 hello_world:
@@ -52,4 +54,4 @@ task2:
 	$(DIR_COMMON)/$(SUBDIR_TASK2)/task2.c \
 	-o $(DIR_TARGET)/task2
 	cp $(DIR_COMMON)/$(SUBDIR_TASK2)/plotter.py \
-	$(DIR_TARGET)/plotter.py
+	$(DIR_SCRIPTS)/plotter.py
