@@ -47,7 +47,7 @@ int main(int argc, char* argv[]){
 	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
-	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der;
+	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *exch;
 	double d_temp[4];
 
 	/*
@@ -137,6 +137,15 @@ int main(int argc, char* argv[]){
 				- f_der[i * 1] * y[i + 1] \
 				- 10 * f_der[i] * y[i]) / 12.0;
 		}
+
+		/*
+		//compute next iteration of approximation
+		solve_sle(y_next, a, b, c, w, N);
+		err = max_diff(y, y_next, N);
+		exch = y;
+		y = y_next;
+		y_next = exch;
+		*/
 	}
 
 	free(a);
