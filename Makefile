@@ -51,3 +51,5 @@ task2:
 	$(CC_OMP) $(FLAGS) $(FLAGS_OMP) \
 	$(DIR_COMMON)/$(SUBDIR_TASK2)/task2.c \
 	-o $(DIR_TARGET)/task2
+	cp $(DIR_COMMON)/$(SUBDIR_TASK2)/plotter.py \
+	$(DIR_TARGET)/plotter.py
