@@ -126,8 +126,16 @@ int main(int argc, char* argv[]){
 		w[N - 1] = y_right;
 		//cycle constant: cycle range
 		i_temp = N - 1;
+		//cycle constant: frequently used expression
+		d_temp[0] = 1 / (h * h);
 		for(i = 1; i < i_temp; i++){
-			//important work
+			a[i] = d_temp[0] - f_der[i - 1] / 12.0;
+			c[i] = d_temp[0] - f_der[i + 1] / 12.0;
+			b[i] = -2.0 * d_temp[0] - f_der[i] * 5.0 / 6.0;
+			w[i] = (f[i - 1] + f[i + 1] + 10.0 * f[i] \
+				- f_der[i - 1] * y[i - 1] \
+				- f_der[i * 1] * y[i + 1] \
+				- 10 * f_der[i] * y[i]) / 12.0;
 		}
 	}
 
