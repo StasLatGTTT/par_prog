@@ -53,7 +53,7 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len);
 void print_3d(double *a, double *b, double *c, int len);
 
 int main(int argc, char* argv[]){
-	int N = 1, i = 0;
+	int N = 1, i = 0, critical = 100;
 	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
@@ -127,24 +127,16 @@ int main(int argc, char* argv[]){
 	y[0] = y_left;
 	y[N - 1] = y_right;
 	for (i = 1; i < N - 1; i++){
+		x[i] = x[i - 1] + h;
 		y[i] = y[i - 1] + d_temp[0];
 		y_next[i] = y[i] + d_temp[1];
-		x[i] = x[i - 1] + h;
 	}
 	//initial err
 	err = d_temp[1];
 
-	double a1[] = {0.0, 3.0, 3.0, 3.0, 0.0};
-	double b1[] = {1.0, -6.0, -6.0, -6.0, 1.0};
-	double c1[] = {0.0, 3.0, 3.0, 3.0, 0.0};
-	double w1[] = {1.0, 3.0, -9.0, 9.0, 5.0};
-	double y1[] = {1.0, 2.0, 3.0, 4.0, 5.0};
-
-	sle_3d(y1, a1, b1, c1, w1, 5);
-	printf("%f\t%f\t%f\t%f\t%f\n", y1[0], y1[1], y1[2], y1[3], y1[4]);
 	//main cycle
 	printf("Starting computation cycle\n");
-	while(err < EPS){
+	while(err > EPS && critical != 0){
 		//setting iteration vectors
 		task_func(f, y, N, param);
 		task_func_der(f_der, f, N, h, param);
@@ -169,11 +161,12 @@ int main(int argc, char* argv[]){
 
 		//compute next iteration of approximation
 		sle_3d(y_next, a, b, c, w, N);
-		//sle_mx(y_next, mx, w, N);
 		err = max_diff(y, y_next, N);
 		exch = y;
 		y = y_next;
 		y_next = exch;
+
+		critical--;
 		printf("Cycle\terr=%f\n", err);
 	}
 	printf("Printing result\n");
@@ -240,7 +233,7 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 	new_c = (double*) malloc(len * sizeof(double));
 	new_w = (double*) malloc(len * sizeof(double));
 
-	while(d < 4){
+	while(d < len){
 		new_b[0] = b[0];
 		new_b[len - 1] = b[len - 1];
 		new_c[0] = c[0];
@@ -268,22 +261,18 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		}
 		d *= 2;
 
-		for(i = 0; i < len; i++){
-			printf("%f\t", w[i]);
-		}
-
 		memcpy(a, new_a, len * sizeof(double));
 		memcpy(b, new_b, len * sizeof(double));
 		memcpy(c, new_c, len * sizeof(double));
 		memcpy(w, new_w, len * sizeof(double));
-		printf("\nRed cycle\n");
+		//printf("Red cycle\n");
 	}
 
 	for(i = 0; i < len; i++){
 		y[i] = w[i] / b[i];
 	}
 
-	print_3d(a, b, c, len);
+	//print_3d(a, b, c, len);
 
 	free(new_a);
 	free(new_b);
