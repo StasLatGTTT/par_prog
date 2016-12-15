@@ -6,6 +6,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <omp.h>
 
@@ -60,7 +61,8 @@ int main(int argc, char* argv[]){
 	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
-	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, **exch;
+	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *pm, *exch;
+	double **m;
 	double d_temp[4];
 	FILE* out;
 
@@ -119,6 +121,12 @@ int main(int argc, char* argv[]){
 	y_next = (double*) malloc(N * sizeof(double));
 	f = (double*) malloc(N * sizeof(double));
 	f_der = (double*) malloc(N * sizeof(double));
+
+	/*pm = (double*) malloc(N * N * sizeof(double));
+	m = (double**) malloc(N * sizeof(double*));
+	for(i = 0; i < N; i++){
+		m[i] = pm + i * N;
+	}*/
 
 	//initial x and y setting
 	//cycle constant: diff between neighbour y
@@ -193,6 +201,9 @@ int main(int argc, char* argv[]){
 	free(f);
 	free(w);
 
+	//free(m);
+	//free(pm);
+
 	printf("Computation complete\n");
 	return 0;
 }
@@ -227,7 +238,42 @@ void task_func_der(double *f_der, double *f, int len, double h, double param)
 void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 {
 	int i = 0, j = 0, d = 1;
+	double *new_a, *new_b, *new_c, *new_w;
+
+	new_a = (double*) malloc(len * sizeof(double));
+	new_b = (double*) malloc(len * sizeof(double));
+	new_c = (double*) malloc(len * sizeof(double));
+	new_w = (double*) malloc(len * sizeof(double));
+
+	new_b[0] = b[0];
+	new_b[len - 1] = b[len - 1];
+	new_c[0] = c[0];
+	new_c[len - 1] = c[len - 1];
+
+	while(d < len){
+		for(i = 1; i < len - 1; i++){
+			new_a[i] = - a[i] * (a[i - d]) / b[i];
+			new_c[i] = - c[i] * c[i + d] / b[i];
+			new_b[i] = b[i] - a[i] * c[i - d] / b[i - d] - \
+				c[i] * a[i + d] / b[i + d];
+			new_w[i] = w[i] - a[i] / b[i - d] * w[i - d] - \
+				c[i] / b[i + d] * w[i + d];
+
+		}
+		d *= 2;
+
+		memcpy(a, new_a, len * sizeof(double));
+		memcpy(b, new_b, len * sizeof(double));
+		memcpy(c, new_c, len * sizeof(double));
+		memcpy(w, new_w, len * sizeof(double));
+	}
+
 	print_3d(a, b, c, len);
+
+	free(new_a);
+	free(new_b);
+	free(new_c);
+	free(new_w);
 }
 
 void sle_mx(double *y, double **m, double *w, int len){
@@ -237,10 +283,11 @@ void sle_mx(double *y, double **m, double *w, int len){
 
 void print_3d(double *a, double *b, double *c, int len){
 	FILE *ff = fopen("matrix.txt", "w");
-	for (int i = 0; i < len; i++){
+	fprintf(ff, "%f\t%f\n", b[0], c[0]);
+	for (int i = 1; i < len; i++){
 		int j = 0;
 		for (; j < i - 1; j++){
-			fprintf(ff,"0.0\t\t");
+			fprintf(ff,"0.000000\t");
 		}
 		fprintf(ff,"%f\t%f\t%f\n", a[i], b[i], c[i]);
 	}
