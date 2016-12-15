@@ -138,7 +138,7 @@ int main(int argc, char* argv[]){
 	double b1[] = {1.0, -6.0, -6.0, -6.0, 1.0};
 	double c1[] = {0.0, 3.0, 3.0, 3.0, 0.0};
 	double w1[] = {1.0, 3.0, -9.0, 9.0, 5.0};
-	double y1[] = {0.0, 0.0, 0.0, 0.0, 0.0};
+	double y1[] = {1.0, 2.0, 3.0, 4.0, 5.0};
 
 	sle_3d(y1, a1, b1, c1, w1, 5);
 	printf("%f\t%f\t%f\t%f\t%f\n", y1[0], y1[1], y1[2], y1[3], y1[4]);
@@ -247,6 +247,8 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		new_c[len - 1] = c[len - 1];
 		new_a[0] = a[0];
 		new_a[len - 1] = a[len - 1];
+		new_w[0] = w[0];
+		new_w[len - 1] = w[len - 1];
 
 		for(i = 1; i < len - 1; i++){
 			new_a[i] = - a[i] * ((i-d>=0)?a[i-d]:0.0) / \
@@ -254,7 +256,7 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 
 			new_c[i] = - c[i] * ((i+d<len)?c[i+d]:0.0) / \
 				((i+d<len)?b[i+d]:1.0);
-				
+
 			new_b[i] = b[i] - a[i] * ((i-d>=0)?c[i-d]:0.0) / \
 				((i-d>=0)?b[i-d]:1.0) - c[i] * \
 				((i+d<len)?a[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
@@ -266,11 +268,15 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		}
 		d *= 2;
 
+		for(i = 0; i < len; i++){
+			printf("%f\t", w[i]);
+		}
+
 		memcpy(a, new_a, len * sizeof(double));
 		memcpy(b, new_b, len * sizeof(double));
 		memcpy(c, new_c, len * sizeof(double));
 		memcpy(w, new_w, len * sizeof(double));
-		printf("Red cycle\n");
+		printf("\nRed cycle\n");
 	}
 
 	for(i = 0; i < len; i++){
