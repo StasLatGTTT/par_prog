@@ -50,19 +50,14 @@ void task_func_der(double *f_der, double *f, int len, double h, double param);
 */
 void sle_3d(double *y, double *a, double *b, double *c, double *w, int len);
 
-void sle_mx(double *y, double **m, double *w, int len);
-
 void print_3d(double *a, double *b, double *c, int len);
-
-void print_mx(double **m, int len);
 
 int main(int argc, char* argv[]){
 	int N = 1, i = 0;
 	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
-	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *pm, *exch;
-	double **m;
+	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *exch;
 	double d_temp[4];
 	FILE* out;
 
@@ -122,12 +117,6 @@ int main(int argc, char* argv[]){
 	f = (double*) malloc(N * sizeof(double));
 	f_der = (double*) malloc(N * sizeof(double));
 
-	/*pm = (double*) malloc(N * N * sizeof(double));
-	m = (double**) malloc(N * sizeof(double*));
-	for(i = 0; i < N; i++){
-		m[i] = pm + i * N;
-	}*/
-
 	//initial x and y setting
 	//cycle constant: diff between neighbour y
 	d_temp[0] = (y_right - y_left) / (x_max - x_min) * h;
@@ -155,7 +144,7 @@ int main(int argc, char* argv[]){
 	printf("%f\t%f\t%f\t%f\t%f\n", y1[0], y1[1], y1[2], y1[3], y1[4]);
 	//main cycle
 	printf("Starting computation cycle\n");
-	while(err > EPS){
+	while(err < EPS){
 		//setting iteration vectors
 		task_func(f, y, N, param);
 		task_func_der(f_der, f, N, h, param);
@@ -210,9 +199,6 @@ int main(int argc, char* argv[]){
 	free(f);
 	free(w);
 
-	//free(m);
-	//free(pm);
-
 	printf("Computation complete\n");
 	return 0;
 }
@@ -254,7 +240,7 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 	new_c = (double*) malloc(len * sizeof(double));
 	new_w = (double*) malloc(len * sizeof(double));
 
-	while(d < len){
+	while(d < 4){
 		new_b[0] = b[0];
 		new_b[len - 1] = b[len - 1];
 		new_c[0] = c[0];
@@ -263,12 +249,19 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		new_a[len - 1] = a[len - 1];
 
 		for(i = 1; i < len - 1; i++){
-			new_a[i] = - a[i] * ((i-d>=0)?a[i-d]:0.0) / ((i-d>=0)?b[i-d]:1.0);
-			new_c[i] = - c[i] * ((i+d<len)?c[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
-			new_b[i] = b[i] - a[i] * ((i-d>=0)?c[i-d]:0.0) / ((i-d>=0)?b[i-d]:1.0) - \
-				c[i] * ((i+d<len)?a[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
-			new_w[i] = w[i] - a[i] / ((i-d>=0)?b[i-d]:1.0) * ((i-d>=0)?w[i-d]:0.0) - \
-				c[i] / ((i+d<len)?b[i+d]:1.0) * ((i+d<len)?w[i+d]:0.0);
+			new_a[i] = - a[i] * ((i-d>=0)?a[i-d]:0.0) / \
+				((i-d>=0)?b[i-d]:1.0);
+
+			new_c[i] = - c[i] * ((i+d<len)?c[i+d]:0.0) / \
+				((i+d<len)?b[i+d]:1.0);
+				
+			new_b[i] = b[i] - a[i] * ((i-d>=0)?c[i-d]:0.0) / \
+				((i-d>=0)?b[i-d]:1.0) - c[i] * \
+				((i+d<len)?a[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
+
+			new_w[i] = w[i] - a[i] / ((i-d>=0)?b[i-d]:1.0) * \
+			((i-d>=0)?w[i-d]:0.0) - c[i] / ((i+d<len)?b[i+d]:1.0) * \
+				((i+d<len)?w[i+d]:0.0);
 
 		}
 		d *= 2;
@@ -277,23 +270,19 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		memcpy(b, new_b, len * sizeof(double));
 		memcpy(c, new_c, len * sizeof(double));
 		memcpy(w, new_w, len * sizeof(double));
+		printf("Red cycle\n");
 	}
 
 	for(i = 0; i < len; i++){
 		y[i] = w[i] / b[i];
 	}
 
-	//print_3d(a, b, c, len);
+	print_3d(a, b, c, len);
 
 	free(new_a);
 	free(new_b);
 	free(new_c);
 	free(new_w);
-}
-
-void sle_mx(double *y, double **m, double *w, int len){
-	int i = 0, j = 0, d = 1;
-	print_mx(m, len);
 }
 
 void print_3d(double *a, double *b, double *c, int len){
@@ -305,17 +294,6 @@ void print_3d(double *a, double *b, double *c, int len){
 			fprintf(ff,"0.000000\t");
 		}
 		fprintf(ff,"%f\t%f\t%f\n", a[i], b[i], c[i]);
-	}
-	fclose(ff);
-}
-
-void print_mx(double **m, int len){
-	FILE *ff = fopen("matrix.txt", "w");
-	for (int i = 0; i < len; i++){
-		for (int j = 0; j < i - 1; j++){
-			fprintf(ff,"%f\t", m[i][j]);
-		}
-		fprintf(ff,"\n");
 	}
 	fclose(ff);
 }
