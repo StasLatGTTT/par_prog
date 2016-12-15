@@ -49,16 +49,18 @@ void task_func_der(double *f_der, double *f, int len, double h, double param);
 */
 void sle_3d(double *y, double *a, double *b, double *c, double *w, int len);
 
-void sle_mx(double *y, double *m, double *w, int len);
+void sle_mx(double *y, double **m, double *w, int len);
 
 void print_3d(double *a, double *b, double *c, int len);
+
+void print_mx(double **m, int len);
 
 int main(int argc, char* argv[]){
 	int N = 1, i = 0;
 	int i_temp;
 	double x_min = -10.0, x_max = 10.0, y_left, y_right;
 	double err = 1, h = 1, param = 100.0;
-	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, *exch;
+	double *a, *b, *c, *w, *x, *y, *y_next, *f, *f_der, **exch;
 	double d_temp[4];
 	FILE* out;
 
@@ -228,8 +230,9 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 	print_3d(a, b, c, len);
 }
 
-void sle_mx(double *y, double *m, double *w, int len){
+void sle_mx(double *y, double **m, double *w, int len){
 	int i = 0, j = 0, d = 1;
+	print_mx(m, len);
 }
 
 void print_3d(double *a, double *b, double *c, int len){
@@ -240,6 +243,17 @@ void print_3d(double *a, double *b, double *c, int len){
 			fprintf(ff,"0.0\t\t");
 		}
 		fprintf(ff,"%f\t%f\t%f\n", a[i], b[i], c[i]);
+	}
+	fclose(ff);
+}
+
+void print_mx(double **m, int len){
+	FILE *ff = fopen("matrix.txt", "w");
+	for (int i = 0; i < len; i++){
+		for (int j = 0; j < i - 1; j++){
+			fprintf(ff,"%f\t", m[i][j]);
+		}
+		fprintf(ff,"\n");
 	}
 	fclose(ff);
 }
