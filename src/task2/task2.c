@@ -145,13 +145,21 @@ int main(int argc, char* argv[]){
 	//initial err
 	err = d_temp[1];
 
+	double a1[] = {0.0, 3.0, 3.0, 3.0, 0.0};
+	double b1[] = {1.0, -6.0, -6.0, -6.0, 1.0};
+	double c1[] = {0.0, 3.0, 3.0, 3.0, 0.0};
+	double w1[] = {1.0, 3.0, -9.0, 9.0, 5.0};
+	double y1[] = {0.0, 0.0, 0.0, 0.0, 0.0};
+
+	sle_3d(y1, a1, b1, c1, w1, 5);
+	printf("%f\t%f\t%f\t%f\t%f\n", y1[0], y1[1], y1[2], y1[3], y1[4]);
 	//main cycle
 	printf("Starting computation cycle\n");
 	while(err > EPS){
 		//setting iteration vectors
 		task_func(f, y, N, param);
 		task_func_der(f_der, f, N, h, param);
-		err /= 2.0;
+		//err /= 2.0;
 		a[0] = c[0] = a[N -1] = c[N - 1] = 0.0;
 		b[0] = b[N - 1] = 1;
 		w[0] = y_left;
@@ -173,10 +181,11 @@ int main(int argc, char* argv[]){
 		//compute next iteration of approximation
 		sle_3d(y_next, a, b, c, w, N);
 		//sle_mx(y_next, mx, w, N);
-		//err = max_diff(y, y_next, N);
+		err = max_diff(y, y_next, N);
 		exch = y;
 		y = y_next;
 		y_next = exch;
+		printf("Cycle\terr=%f\n", err);
 	}
 	printf("Printing result\n");
 
@@ -245,19 +254,21 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 	new_c = (double*) malloc(len * sizeof(double));
 	new_w = (double*) malloc(len * sizeof(double));
 
-	new_b[0] = b[0];
-	new_b[len - 1] = b[len - 1];
-	new_c[0] = c[0];
-	new_c[len - 1] = c[len - 1];
-
 	while(d < len){
+		new_b[0] = b[0];
+		new_b[len - 1] = b[len - 1];
+		new_c[0] = c[0];
+		new_c[len - 1] = c[len - 1];
+		new_a[0] = a[0];
+		new_a[len - 1] = a[len - 1];
+
 		for(i = 1; i < len - 1; i++){
-			new_a[i] = - a[i] * (a[i - d]) / b[i];
-			new_c[i] = - c[i] * c[i + d] / b[i];
-			new_b[i] = b[i] - a[i] * c[i - d] / b[i - d] - \
-				c[i] * a[i + d] / b[i + d];
-			new_w[i] = w[i] - a[i] / b[i - d] * w[i - d] - \
-				c[i] / b[i + d] * w[i + d];
+			new_a[i] = - a[i] * ((i-d>=0)?a[i-d]:0.0) / ((i-d>=0)?b[i-d]:1.0);
+			new_c[i] = - c[i] * ((i+d<len)?c[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
+			new_b[i] = b[i] - a[i] * ((i-d>=0)?c[i-d]:0.0) / ((i-d>=0)?b[i-d]:1.0) - \
+				c[i] * ((i+d<len)?a[i+d]:0.0) / ((i+d<len)?b[i+d]:1.0);
+			new_w[i] = w[i] - a[i] / ((i-d>=0)?b[i-d]:1.0) * ((i-d>=0)?w[i-d]:0.0) - \
+				c[i] / ((i+d<len)?b[i+d]:1.0) * ((i+d<len)?w[i+d]:0.0);
 
 		}
 		d *= 2;
@@ -268,7 +279,11 @@ void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 		memcpy(w, new_w, len * sizeof(double));
 	}
 
-	print_3d(a, b, c, len);
+	for(i = 0; i < len; i++){
+		y[i] = w[i] / b[i];
+	}
+
+	//print_3d(a, b, c, len);
 
 	free(new_a);
 	free(new_b);
