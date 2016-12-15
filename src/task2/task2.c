@@ -47,9 +47,11 @@ void task_func_der(double *f_der, double *f, int len, double h, double param);
 		w - free vector
 		len - their common length
 */
-void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
+void sle_3d(double *y, double *a, double *b, double *c, double *w, int len);
 
-void print_matrix(double *a, double *b, double *c, int len);
+void sle_mx(double *y, double *m, double *w, int len);
+
+void print_3d(double *a, double *b, double *c, int len);
 
 int main(int argc, char* argv[]){
 	int N = 1, i = 0;
@@ -159,7 +161,8 @@ int main(int argc, char* argv[]){
 		}
 
 		//compute next iteration of approximation
-		solve_sle(y_next, a, b, c, w, N);
+		sle_3d(y_next, a, b, c, w, N);
+		//sle_mx(y_next, mx, w, N);
 		//err = max_diff(y, y_next, N);
 		exch = y;
 		y = y_next;
@@ -219,14 +222,17 @@ void task_func_der(double *f_der, double *f, int len, double h, double param)
 	}
 }
 
-void solve_sle(double *y, double *a, double *b, double *c, double *w, int len)
+void sle_3d(double *y, double *a, double *b, double *c, double *w, int len)
 {
 	int i = 0, j = 0, d = 1;
-	print_matrix(a, b, c, len);
-
+	print_3d(a, b, c, len);
 }
 
-void print_matrix(double *a, double *b, double *c, int len){
+void sle_mx(double *y, double *m, double *w, int len){
+	int i = 0, j = 0, d = 1;
+}
+
+void print_3d(double *a, double *b, double *c, int len){
 	FILE *ff = fopen("matrix.txt", "w");
 	for (int i = 0; i < len; i++){
 		int j = 0;
