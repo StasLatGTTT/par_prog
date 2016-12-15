@@ -49,6 +49,8 @@ void task_func_der(double *f_der, double *f, int len, double h, double param);
 */
 void solve_sle(double *y, double *a, double *b, double *c, double *w, int len);
 
+void print_matrix(double *a, double *b, double *c, int len);
+
 int main(int argc, char* argv[]){
 	int N = 1, i = 0;
 	int i_temp;
@@ -219,8 +221,19 @@ void task_func_der(double *f_der, double *f, int len, double h, double param)
 
 void solve_sle(double *y, double *a, double *b, double *c, double *w, int len)
 {
-	int i = 0;
-	for(i = 0; i < len; i++){
-		y[i] = 1.4 + 0.001 * i;
+	int i = 0, j = 0, d = 1;
+	print_matrix(a, b, c, len);
+
+}
+
+void print_matrix(double *a, double *b, double *c, int len){
+	FILE *ff = fopen("matrix.txt", "w");
+	for (int i = 0; i < len; i++){
+		int j = 0;
+		for (; j < i - 1; j++){
+			fprintf(ff,"0.0\t\t");
+		}
+		fprintf(ff,"%f\t%f\t%f\n", a[i], b[i], c[i]);
 	}
+	fclose(ff);
 }
