@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
 	start = omp_get_wtime();
 	for (i = Di; i < ISIZE; i++){
-	for (j = Dj; j < JSIZE - Di; j++){
+	for (j = Dj; j < JSIZE; j++){
 		a[i][j] = sin(0.00001 * a[i - Di][j - Dj]);
 	}
 	}
