@@ -155,7 +155,7 @@ int main(int argc, char* argv[]){
 			b[i] = -2.0 * d_temp[0] - f_der[i] * 5.0 / 6.0;
 			w[i] = (f[i - 1] + f[i + 1] + 10.0 * f[i] \
 				- f_der[i - 1] * y[i - 1] \
-				- f_der[i * 1] * y[i + 1] \
+				- f_der[i + 1] * y[i + 1] \
 				- 10 * f_der[i] * y[i]) / 12.0;
 		}
 
